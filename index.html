@@ -1,0 +1,433 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login & Register</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+            background: #f0f2f5;
+        }
+
+        .container {
+            width: 400px;
+            min-height: 450px;
+            padding: 45px 35px;
+            text-align: center;
+            background: #ffffff;
+            border-radius: 15px;
+
+            box-shadow:
+                16px 16px 32px #c8c8c8,
+                -16px -16px 32px #ffffff;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #777;
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+
+        .input-box {
+            position: relative;
+            margin-top: 15px;
+        }
+
+        input {
+            height: 45px;
+            width: 100%;
+            border: 2px solid #ddd;
+            border-radius: 7px;
+            padding: 0 40px 0 12px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: rgb(58, 137, 241);
+            box-shadow: 0 0 5px rgba(58, 137, 241, 0.3);
+        }
+
+        input::placeholder {
+            font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+            font-size: 15px;
+        }
+
+        .eye {
+            position: absolute;
+            right: 12px;
+            top: 13px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        button {
+            margin-top: 25px;
+            height: 42px;
+            width: 130px;
+            background-color: rgb(58, 137, 241);
+            color: white;
+            border: none;
+            font-size: 17px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: rgb(35, 110, 215);
+            transform: translateY(-2px);
+        }
+
+        #message {
+            margin-top: 18px;
+            font-size: 16px;
+        }
+
+        .register-text,
+        .login-text {
+            margin-top: 25px;
+            font-size: 15px;
+            color: #555;
+        }
+
+        .register-text span,
+        .login-text span {
+            color: rgb(58, 137, 241);
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .register-text span:hover,
+        .login-text span:hover {
+            text-decoration: underline;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media(max-width: 450px) {
+            .container {
+                width: 90%;
+                padding: 40px 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- LOGIN FORM -->
+        <div id="loginForm">
+
+            <h2>Admin Login</h2>
+
+            <p class="subtitle">
+                Login to access Admin Panel
+            </p>
+
+            <div class="input-box">
+                <input type="text" id="userId" placeholder="Enter Admin ID">
+            </div>
+
+            <div class="input-box">
+                <input type="password" id="password" placeholder="Enter Password">
+                <span class="eye" onclick="showPassword('password', this)">👁️</span>
+            </div>
+
+            <button id="loginBtn">Login</button>
+
+            <p id="message"></p>
+
+            <p class="register-text">
+                Don't have an account?
+                <span onclick="showRegister()">Register Now</span>
+            </p>
+
+        </div>
+
+
+        <!-- REGISTER FORM -->
+        <div id="registerForm" class="hidden">
+
+            <h2>Admin Register</h2>
+
+            <p class="subtitle">
+                Create your Admin Account
+            </p>
+
+            <div class="input-box">
+                <input type="text" id="regName" placeholder="Enter Full Name">
+            </div>
+
+            <div class="input-box">
+                <input type="text" id="regId" placeholder="Create Admin ID">
+            </div>
+
+            <div class="input-box">
+                <input type="email" id="regEmail" placeholder="Enter Email">
+            </div>
+
+            <div class="input-box">
+                <input type="password" id="regPassword" placeholder="Create Password">
+                <span class="eye"
+                    onclick="showPassword('regPassword', this)">👁️</span>
+            </div>
+
+            <div class="input-box">
+                <input type="password" id="confirmPassword"
+                    placeholder="Confirm Password">
+                <span class="eye"
+                    onclick="showPassword('confirmPassword', this)">👁️</span>
+            </div>
+
+            <button onclick="registerAdmin()">Register</button>
+
+            <p id="registerMessage"></p>
+
+            <p class="login-text">
+                Already have an account?
+                <span onclick="showLogin()">Login Now</span>
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        // =========================
+        // LOGIN
+        // =========================
+
+        let userId = document.querySelector("#userId");
+        let password = document.querySelector("#password");
+        let loginBtn = document.querySelector("#loginBtn");
+        let message = document.querySelector("#message");
+
+        loginBtn.addEventListener("click", function () {
+
+            let idValue = userId.value.trim();
+            let passValue = password.value;
+
+            if (idValue === "" || passValue === "") {
+
+                message.style.color = "red";
+                message.innerText = "Please enter ID and Password";
+                return;
+            }
+
+            /*
+                Default Admin Login
+
+                ID       : admin
+                Password : 1234
+            */
+
+            if (idValue === "admin" && passValue === "1234") {
+
+                message.style.color = "green";
+                message.innerText = "Login Successful ✓";
+
+                setTimeout(function () {
+                    window.location.href = "home.html";
+                }, 1000);
+
+            } else {
+
+                message.style.color = "red";
+                message.innerText = "Wrong ID or Password ✕";
+
+            }
+
+        });
+
+
+        // =========================
+        // SHOW / HIDE PASSWORD
+        // =========================
+
+        function showPassword(inputId, eye) {
+
+            let input = document.getElementById(inputId);
+
+            if (input.type === "password") {
+
+                input.type = "text";
+                eye.innerText = "🙈";
+
+            } else {
+
+                input.type = "password";
+                eye.innerText = "👁️";
+
+            }
+        }
+
+
+        // =========================
+        // SHOW REGISTER FORM
+        // =========================
+
+        function showRegister() {
+
+            document.getElementById("loginForm")
+                .classList.add("hidden");
+
+            document.getElementById("registerForm")
+                .classList.remove("hidden");
+
+        }
+
+
+        // =========================
+        // SHOW LOGIN FORM
+        // =========================
+
+        function showLogin() {
+
+            document.getElementById("registerForm")
+                .classList.add("hidden");
+
+            document.getElementById("loginForm")
+                .classList.remove("hidden");
+
+        }
+
+
+        // =========================
+        // REGISTER ADMIN
+        // =========================
+
+        function registerAdmin() {
+
+            let name =
+                document.getElementById("regName").value.trim();
+
+            let id =
+                document.getElementById("regId").value.trim();
+
+            let email =
+                document.getElementById("regEmail").value.trim();
+
+            let pass =
+                document.getElementById("regPassword").value;
+
+            let confirmPass =
+                document.getElementById("confirmPassword").value;
+
+            let registerMessage =
+                document.getElementById("registerMessage");
+
+
+            // Empty field validation
+
+            if (
+                name === "" ||
+                id === "" ||
+                email === "" ||
+                pass === "" ||
+                confirmPass === ""
+            ) {
+
+                registerMessage.style.color = "red";
+                registerMessage.innerText =
+                    "Please fill all fields";
+
+                return;
+            }
+
+
+            // Password length
+
+            if (pass.length < 4) {
+
+                registerMessage.style.color = "red";
+                registerMessage.innerText =
+                    "Password must contain at least 4 characters";
+
+                return;
+            }
+
+
+            // Password matching
+
+            if (pass !== confirmPass) {
+
+                registerMessage.style.color = "red";
+                registerMessage.innerText =
+                    "Password does not match";
+
+                return;
+            }
+
+
+            // Save registration data
+
+            localStorage.setItem("adminName", name);
+            localStorage.setItem("adminId", id);
+            localStorage.setItem("adminEmail", email);
+            localStorage.setItem("adminPassword", pass);
+
+
+            registerMessage.style.color = "green";
+            registerMessage.innerText =
+                "Registration Successful ✓";
+
+
+            // Clear form
+
+            document.getElementById("regName").value = "";
+            document.getElementById("regId").value = "";
+            document.getElementById("regEmail").value = "";
+            document.getElementById("regPassword").value = "";
+            document.getElementById("confirmPassword").value = "";
+
+
+            // Login page after 1 second
+
+            setTimeout(function () {
+
+                showLogin();
+
+                message.style.color = "green";
+                message.innerText =
+                    "Registration successful. Please login.";
+
+            }, 1000);
+
+        }
+
+    </script>
+
+</body>
+
+</html>
+
